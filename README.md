@@ -186,3 +186,10 @@ When explaining this project in a technical assessment interview, highlight:
 3. **Transaction Safety**: Seat availability checks and registration inserts occur within single database transactions to avoid race conditions.
 4. **Auto-Promotion Mechanism**: Cancelling a confirmed registration immediately runs a query to promote the oldest waitlisted attendee to `CONFIRMED`.
 5. **Standardized Error Contracts**: Domain exceptions map to standard JSON error payloads containing custom `error_code` fields for frontend consumption.
+
+## Documentation
+
+- [Architecture](ARCHITECTURE.md) — System architecture and project structure
+- [API Documentation](API.md) — API endpoints, request/response formats, and error handling
+- [Testing](TESTING.md) — Backend and Playwright test coverage
+- [Screenshots](docs/screenshots/) — Application and testing evidence
