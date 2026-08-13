@@ -5,6 +5,18 @@ EventFlow is a lightweight, production-grade Event Registration and Capacity Man
 It was designed specifically for an internship hiring assessment to showcase real business rules, edge-case handling, clean architecture, and automated test coverage.
 
 ---
+## Current Status
+
+The application is fully functional in the local development environment.
+
+- Backend tests: 10/10 passed
+- Playwright E2E tests: 4/4 passed
+- Frontend ↔ FastAPI integration: working
+- Event capacity and waitlist logic: working
+- Automatic waitlist promotion: working
+- Duplicate registration prevention: working
+
+---
 
 ## Key Features & Business Rules
 
@@ -56,7 +68,25 @@ eventflow/
 │   └── registration.spec.js
 └── README.md
 ```
+---
 
+## API Endpoints
+
+### Health
+
+- `GET /api/v1/health` — Health check
+
+### Events
+
+- `GET /api/v1/events` — List all events
+- `GET /api/v1/events/{event_id}` — Get event details
+- `POST /api/v1/events` — Create an event
+
+### Registrations
+
+- `POST /api/v1/events/{event_id}/register` — Register an attendee
+- `GET /api/v1/events/{event_id}/registrations` — List registrations for an event
+- `POST /api/v1/registrations/{registration_id}/cancel` — Cancel a registration and automatically promote the next waitlisted attendee
 ---
 
 ## Prerequisites
@@ -76,10 +106,11 @@ eventflow/
 cd backend
 
 # Create and activate a virtual environment
-python -m venv venv
+python -m venv .venv
+
 
 # Windows (PowerShell):
-.\venv\Scripts\Activate.ps1
+.\.venv\Scripts\Activate.ps1
 # Mac/Linux:
 source venv/bin/activate
 
@@ -134,8 +165,17 @@ npm install
 npx playwright install chromium
 npx playwright test
 ```
+---
+
+## Test Results
+
+### Backend Tests
+
+```text
+10 passed
 
 ---
+
 
 ## Technical Interview Discussion Points
 
