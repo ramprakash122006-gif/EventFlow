@@ -63,6 +63,11 @@ export function EventCard({ event, onRegister, onViewAttendees }) {
               style={{ width: `${percentage}%` }}
             ></div>
           </div>
+
+          <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.8rem', color: '#94a3b8', marginTop: '6px' }}>
+            <span>Available Seats: <strong style={{ color: is_full ? '#ef4444' : '#10b981' }}>{available_seats}</strong></span>
+            <span>Capacity: <strong>{total_capacity}</strong></span>
+          </div>
         </div>
 
         <div className="card-actions">

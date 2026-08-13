@@ -8,36 +8,115 @@ from app.exceptions import DomainException, domain_exception_handler
 from app.api.events import router as events_router
 from app.api.registrations import router as registrations_router
 from app.models.event import Event
+from app.models.registration import Registration, RegistrationStatus
 
 def seed_sample_events():
     db = SessionLocal()
     try:
-        if db.query(Event).count() == 0:
-            now = datetime.now(timezone.utc)
-            sample_events = [
-                Event(
-                    title="Tech Innovation Summit 2026",
-                    description="Join industry leaders to explore the future of AI, Cloud Native, and Event-Driven Architecture.",
-                    location="Auditorium A, Tech Hub",
-                    start_time=now + timedelta(days=5),
-                    total_capacity=3
+        now = datetime.now(timezone.utc)
+        sample_events = [
+            Event(
+                title="Tech Innovation Summit 2026",
+                description="Join industry leaders to explore the future of AI, Cloud Native, and Event-Driven Architecture.",
+                location="Auditorium A, Tech Hub",
+                start_time=now + timedelta(days=5),
+                total_capacity=3
+            ),
+            Event(
+                title="React & FastAPI Masterclass",
+                description="Hands-on workshop covering high-performance REST APIs with FastAPI and responsive UI with React.",
+                location="Workshop Room 102",
+                start_time=now + timedelta(days=12),
+                total_capacity=5
+            ),
+            Event(
+                title="Legacy Systems & Migration (Past Event)",
+                description="Retrospective discussion on migrating monoliths to decoupled microservices.",
+                location="Conference Hall C",
+                start_time=now - timedelta(days=2),
+                total_capacity=10
+            ),
+            Event(
+                title="AI & Machine Learning Summit",
+                description="Explore cutting-edge advancements in generative AI, LLMs, neural network architectures, and scalable ML infrastructure.",
+                location="Grand Ballroom, Tech Center",
+                start_time=now + timedelta(days=8),
+                total_capacity=50
+            ),
+            Event(
+                title="React Advanced Workshop",
+                description="Deep dive into React Server Components, custom hooks, performance profiling, and advanced UI state management patterns.",
+                location="Workshop Studio B",
+                start_time=now + timedelta(days=10),
+                total_capacity=2
+            ),
+            Event(
+                title="Full Stack Development Workshop",
+                description="Comprehensive hands-on training for building end-to-end web applications with modern APIs and cloud infrastructure.",
+                location="Innovation Lab 204",
+                start_time=now + timedelta(days=15),
+                total_capacity=30
+            ),
+            Event(
+                title="Cloud Computing & DevOps",
+                description="Master Docker containerization, Kubernetes orchestration, CI/CD pipelines, and Infrastructure as Code on multi-cloud platforms.",
+                location="Hall B, Enterprise Campus",
+                start_time=now + timedelta(days=20),
+                total_capacity=75
+            ),
+            Event(
+                title="Cybersecurity Awareness Conference",
+                description="Interactive security conference on threat modeling, zero-trust network security, and secure application development.",
+                location="Security Center Auditorium",
+                start_time=now + timedelta(days=25),
+                total_capacity=20
+            ),
+            Event(
+                title="Data Engineering Bootcamp",
+                description="Master real-time data streaming pipelines with Apache Kafka, modern data warehousing, and scalable ETL processing.",
+                location="Data Hub Room 301",
+                start_time=now + timedelta(days=30),
+                total_capacity=40
+            ),
+            Event(
+                title="Open Source Community Meetup",
+                description="Collaborative gathering for open-source maintainers, contributors, and developers to share projects and contribute to repositories.",
+                location="Community Hub & Virtual Stream",
+                start_time=now + timedelta(days=35),
+                total_capacity=60
+            )
+        ]
+        
+        existing_titles = {e[0] for e in db.query(Event.title).all()}
+        events_to_add = [e for e in sample_events if e.title not in existing_titles]
+        if events_to_add:
+            db.add_all(events_to_add)
+            db.commit()
+
+        # Seed registrations for React Advanced Workshop to demonstrate full/waitlisted state
+        full_event = db.query(Event).filter(Event.title == "React Advanced Workshop").first()
+        if full_event and db.query(Registration).filter(Registration.event_id == full_event.id).count() == 0:
+            sample_regs = [
+                Registration(
+                    event_id=full_event.id,
+                    full_name="Sarah Connor",
+                    email="sarah.c@example.com",
+                    status=RegistrationStatus.CONFIRMED
                 ),
-                Event(
-                    title="React & FastAPI Masterclass",
-                    description="Hands-on workshop covering high-performance REST APIs with FastAPI and responsive UI with React.",
-                    location="Workshop Room 102",
-                    start_time=now + timedelta(days=12),
-                    total_capacity=5
+                Registration(
+                    event_id=full_event.id,
+                    full_name="John Doe",
+                    email="john.d@example.com",
+                    status=RegistrationStatus.CONFIRMED
                 ),
-                Event(
-                    title="Legacy Systems & Migration (Past Event)",
-                    description="Retrospective discussion on migrating monoliths to decoupled microservices.",
-                    location="Conference Hall C",
-                    start_time=now - timedelta(days=2),
-                    total_capacity=10
+                Registration(
+                    event_id=full_event.id,
+                    full_name="Alex Mercer",
+                    email="alex.m@example.com",
+                    status=RegistrationStatus.WAITLISTED
                 )
             ]
-            db.add_all(sample_events)
+            db.add_all(sample_regs)
             db.commit()
     finally:
         db.close()
